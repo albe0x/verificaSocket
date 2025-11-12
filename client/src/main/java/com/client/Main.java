@@ -50,10 +50,13 @@ public class Main {
                         break;
                     case "S":
                         gameStatus();
+                        break;
                     case "N":
                         newGame();
+                        break;
                     case "Q":
                         quit();
+                        break;
                     default:
                         try {
                             gioca(Integer.parseInt(comando));
