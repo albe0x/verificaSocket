@@ -15,6 +15,7 @@ public class MyThread extends Thread{
     int max = 100;
     int tries = 0;
     int secretNumber;
+    boolean endGame = false;
 
 
     public MyThread (Socket s) {
@@ -56,18 +57,21 @@ public class MyThread extends Thread{
             break;
             case "QUIT":
                 out.println("BYE");
+                s.close();
             return;
             default:
-            out.println("ERR UNKNOWNCMD");
+                out.println("ERR UNKNOWNCMD");
             break;
         }
         }
-
-
     }
 
     public void range(String[] parts)
     {
+        if (endGame) {
+            out.println("ERR NOTALLOWED");
+            return;
+        }
         if(!(tries == 0)){
             out.println("ERR NOTALLOWED");
             return;
@@ -95,6 +99,10 @@ public class MyThread extends Thread{
 
     public void guess(String[] parts)
     {
+        if (endGame) {
+            out.println("ERR NOTALLOWED");
+            return;
+        }
         int value;
         try {
             value = Integer.parseInt(parts[1]);
@@ -112,11 +120,7 @@ public class MyThread extends Thread{
         tries ++;
         if (value == secretNumber){
             out.println("OK CORRECT in T="+tries);
-            try {
-                s.close();
-            } catch (Exception e) {
-                System.out.println("Probl// TODO: handle exceptionemi problemi !!");
-            }
+            endGame = true;
             return;
         }
         if (value < secretNumber){
@@ -137,5 +141,6 @@ public class MyThread extends Thread{
         secretNumber = ThreadLocalRandom.current().nextInt(min, max + 1); 
         tries = 0;  
         out.println("WELCOME INDOVINA v1 RANGE "+ min + " " + max);
+        endGame = false;
     }
 }
